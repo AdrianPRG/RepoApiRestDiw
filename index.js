@@ -30,6 +30,36 @@ let coches = [
   { marca: "Nissan", modelo: "Skyline R34" },
 ];
 
+let concesionarios = [
+  {
+    nombre: "Renault",
+    direccion: "Avenida de Renault",
+    listado: [
+      { modelo: "Renault Clio", precio: 19200, cv: 90 },
+      { modelo: "Renault Arkana", precio: 29500, cv: 145 },
+      { modelo: "Renault Megane E-Tech", precio: 42000, cv: 220 },
+    ],
+  },
+  {
+    nombre: "Autos García",
+    direccion: "Calle Motor 123",
+    listado: [
+      { modelo: "Ford Fiesta", precio: 18500, cv: 100 },
+      { modelo: "Ford Puma", precio: 28500, cv: 155 },
+      { modelo: "Ford Kuga", precio: 35000, cv: 190 },
+    ],
+  },
+  {
+    nombre: "Lambo Elite",
+    direccion: "Paseo del Lujo 7",
+    listado: [
+      { modelo: "Lamborghini Huracán EVO", precio: 249000, cv: 640 },
+      { modelo: "Lamborghini Aventador SVJ", precio: 450000, cv: 770 },
+      { modelo: "Lamborghini Urus", precio: 220000, cv: 650 },
+    ],
+  },
+];
+
 // Lista todos los coches
 app.get("/coches", (request, response) => {
   response.json(coches);

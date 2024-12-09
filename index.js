@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json());
 
 // Indicamos el puerto en el que vamos a desplegar la aplicación
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8081;
 
 // Arrancamos la aplicación
 app.listen(port, () => {
@@ -25,10 +25,6 @@ app.listen(port, () => {
 
 // Definimos una estructura de datos
 // (temporal hasta incorporar una base de datos)
-let coches = [
-  { marca: "Renault", modelo: "Clio" },
-  { marca: "Nissan", modelo: "Skyline R34" },
-];
 
 let concesionarios = [
   {
@@ -60,10 +56,41 @@ let concesionarios = [
   },
 ];
 
-// Lista todos los coches
-app.get("/coches", (request, response) => {
-  response.json(coches);
+/*
+
+LISTADO Y SELECCION
+
+*/
+
+// Obtener todos los concesionarios
+app.get("/concesionarios", (request, response) => {
+  response.json(concesionarios);
 });
+
+// Obtener un solo concesionario
+app.get("/concesionarios/:id", (request, response) => {
+  const id = request.params.id;
+  const result = concesionarios[id];
+  response.json({ result });
+});
+
+// Obtener todos los coches de un concesionario
+
+app.get("/concesionarios/:id/coches", (request, response) => {
+  const id = request.params.id;
+  const result = concesionarios[id]["listado"];
+  response.json({ result });
+});
+
+//Obtener un coche especifico de un concesionario
+
+app.get("/concesionarios/:id/coches/:id2", (request, response) => {
+  const id = request.params.id;
+  const id2 = request.params.id2;
+  const result = concesionarios[id]["listado"][id2];
+  response.json({ result });
+});
+
 
 // Añadir un nuevo coche
 app.post("/coches", (request, response) => {
@@ -71,12 +98,6 @@ app.post("/coches", (request, response) => {
   response.json({ message: "ok" });
 });
 
-// Obtener un solo coche
-app.get("/coches/:id", (request, response) => {
-  const id = request.params.id;
-  const result = coches[id];
-  response.json({ result });
-});
 
 // Actualizar un solo coche
 app.put("/coches/:id", (request, response) => {

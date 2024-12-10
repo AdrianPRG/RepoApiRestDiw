@@ -92,11 +92,26 @@ app.get("/concesionarios/:id/coches/:id2", (request, response) => {
 });
 
 
-// Añadir un nuevo coche
-app.post("/coches", (request, response) => {
-  coches.push(request.body);
+/* 
+  
+INSERCCION DE DATOS
+
+*/
+
+// Añadir un nuevo concesionario
+app.post("/addconcesionario", (request, response) => {
+  concesionarios.push(request.body);
   response.json({ message: "ok" });
 });
+
+//Añadir un coche a un concesionario
+
+app.post("/addcocheconcesionario/:id/coches", (request, response) => {
+  const id  = request.params.id;
+  concesionarios[id]["listado"].push( request.body);
+  response.json({ message: "ok" });
+});
+
 
 
 // Actualizar un solo coche

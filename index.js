@@ -99,27 +99,46 @@ INSERCCION DE DATOS
 */
 
 // Añadir un nuevo concesionario
-app.post("/addconcesionario", (request, response) => {
+app.post("/concesionarios", (request, response) => {
   concesionarios.push(request.body);
   response.json({ message: "ok" });
 });
 
 //Añadir un coche a un concesionario
 
-app.post("/addcocheconcesionario/:id/coches", (request, response) => {
+app.post("/concesionarios/:id/coches", (request, response) => {
   const id  = request.params.id;
-  concesionarios[id]["listado"].push( request.body);
+  concesionarios[id]["listado"].push(request.body);
   response.json({ message: "ok" });
 });
 
 
+/* 
 
-// Actualizar un solo coche
-app.put("/coches/:id", (request, response) => {
+ACTUALIZACION DE DATOS 
+
+*/
+
+// Actualizar un concesionario
+
+app.put("/concesionarios/:id", (request, response) => {
   const id = request.params.id;
-  coches[id] = request.body;
+  concesionarios[id] = request.body;
   response.json({ message: "ok" });
 });
+
+
+//Actualizar el coche de un concesionario
+
+app.put("/concesionarios/:id/coches/:id2", (request, response) => {
+  const id = request.params.id;
+  const idcoche = request.params.id2;
+  concesionarios[id]["listado"][idcoche] = request.body;
+  response.json({ message: "ok" });
+});
+
+
+
 
 // Borrar un elemento del array
 app.delete("/coches/:id", (request, response) => {

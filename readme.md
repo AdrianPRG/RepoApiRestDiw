@@ -2,6 +2,7 @@
 
 Proyecto Realizado por Adrián Lopez
 
+
 ## Propósito del proyecto
 
 Este es un proyecto didáctico en el que vamos a crear una API REST.
@@ -15,3 +16,5 @@ Este es un proyecto didáctico en el que vamos a crear una API REST.
 - PUT (Actualizar datos).
 
 - DELETE (Eliminar datos).
+
+### Puerto utilizado para peticiones: 8081

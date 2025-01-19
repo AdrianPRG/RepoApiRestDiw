@@ -18,6 +18,40 @@ app.use(express.json());
 // Indicamos el puerto en el que vamos a desplegar la aplicación
 const port = process.env.PORT || 8081;
 
+const { MongoClient, ServerApiVersion } = require('mongodb');
+
+//URL de conexion
+
+const uri = "mongodb+srv://alopgal962:basedaweb962@cluster0.bovi8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+//Creamos el cliente con las opcio es de mongoDb del objeto de la api. 
+
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+//funcion que se conecta a la base de dats
+
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    //Ponemos aqui el codigo de la api
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
+
 // Arrancamos la aplicación
 app.listen(port, () => {
   console.log(`Servidor desplegado en puerto: ${port}`);
@@ -25,7 +59,7 @@ app.listen(port, () => {
 
 // Definimos una estructura de datos
 // (temporal hasta incorporar una base de datos)
-
+/*
 let concesionarios = [
   {
     nombre: "Renault",
@@ -55,11 +89,12 @@ let concesionarios = [
     ],
   },
 ];
-
+*/
 //LISTADO Y SELECCION
 
 // Obtener todos los concesionarios
-app.get("/concesionarios", (request, response) => {
+app.get("/concesionarios", async (request, response) => {
+  await client.db().collection("").insertOne()
   response.json(concesionarios);
 });
 

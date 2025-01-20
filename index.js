@@ -18,7 +18,7 @@ app.use(express.json());
 // Indicamos el puerto en el que vamos a desplegar la aplicación
 const port = process.env.PORT || 8081;
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 //URL de conexion
 
@@ -35,7 +35,7 @@ const client = new MongoClient(uri, {
   }
 });
 
-//funcion que se conecta a la base de dats
+let db;
 
 async function run() {
   try {
@@ -43,85 +43,61 @@ async function run() {
     await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
+
+    db = await client.db("Dawebconcesionario");
+
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
     //Ponemos aqui el codigo de la api
-  } finally {
+  } catch (e){
     // Ensures that the client will close when you finish/error
-    await client.close();
+    console.log(e.pri);
   }
 }
+
 run().catch(console.dir);
 
 // Arrancamos la aplicación
-app.listen(port, () => {
-  console.log(`Servidor desplegado en puerto: ${port}`);
+app.listen(port, async () => {
+   // Send a ping to confirm a successful connection
+   console.log(`Servidor desplegado en puerto: ${port}`);
 });
 
-// Definimos una estructura de datos
-// (temporal hasta incorporar una base de datos)
-/*
-let concesionarios = [
-  {
-    nombre: "Renault",
-    direccion: "Avenida de Renault",
-    listado: [
-      { modelo: "Renault Clio", precio: 19200, cv: 90 },
-      { modelo: "Renault Arkana", precio: 29500, cv: 145 },
-      { modelo: "Renault Megane E-Tech", precio: 42000, cv: 220 },
-    ],
-  },
-  {
-    nombre: "Autos García",
-    direccion: "Calle Motor 123",
-    listado: [
-      { modelo: "Ford Fiesta", precio: 18500, cv: 100 },
-      { modelo: "Ford Puma", precio: 28500, cv: 155 },
-      { modelo: "Ford Kuga", precio: 35000, cv: 190 },
-    ],
-  },
-  {
-    nombre: "Lambo Elite",
-    direccion: "Paseo del Lujo 7",
-    listado: [
-      { modelo: "Lamborghini Huracán EVO", precio: 249000, cv: 640 },
-      { modelo: "Lamborghini Aventador SVJ", precio: 450000, cv: 770 },
-      { modelo: "Lamborghini Urus", precio: 220000, cv: 650 },
-    ],
-  },
-];
-*/
-//LISTADO Y SELECCION
 
 // Obtener todos los concesionarios
 app.get("/concesionarios", async (request, response) => {
-  await client.db().collection("").insertOne()
-  response.json(concesionarios);
+  let resultados = await db.collection("Concesionarios").find({}).toArray();
+  response.json(resultados);
 });
 
+
 // Obtener un solo concesionario
-app.get("/concesionarios/:id", (request, response) => {
+app.get("/concesionarios/:id", async (request, response) => {
   const id = request.params.id;
-  const result = concesionarios[id];
+  let result = await db.collection("Concesionarios").findOne({"_id": new ObjectId(id)});
   response.json({ result });
 });
 
 // Obtener todos los coches de un concesionario
 
-app.get("/concesionarios/:id/coches", (request, response) => {
+app.get("/concesionarios/:id/coches", async (request, response) => {
   const id = request.params.id;
-  const result = concesionarios[id]["listado"];
+  //Con projection decimos que no aparezca id pero si listado
+  let result = await db.collection("Concesionarios").findOne({"_id": new ObjectId(id)},{projection : {"listado":1, "_id":0}});
   response.json({ result });
 });
 
 //Obtener un coche especifico de un concesionario
 
-app.get("/concesionarios/:id/coches/:id2", (request, response) => {
+app.get("/concesionarios/:id/coches/:id2", async (request, response) => {
   const id = request.params.id;
   const id2 = request.params.id2;
-  const result = concesionarios[id]["listado"][id2];
+  //Con projection decimos que no aparezca id pero si listado
+  let result = await db.collection("Concesionarios").findOne({"_id": new ObjectId(id)},{projection : {"listado":1, "_id":0}});
+  result = result.listado[id2];
   response.json({ result });
 });
 
+/*
 // INSERCCION DE DATOS
 
 // Añadir un nuevo concesionario
@@ -175,3 +151,4 @@ app.delete("/concesionarios/:id/coches/:id2", (request, response) => {
 
   response.json({ message: "ok" });
 });
+*/

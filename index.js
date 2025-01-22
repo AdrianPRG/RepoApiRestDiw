@@ -121,7 +121,8 @@ app.post("/concesionarios/:id/coches", async (request, response) => {
     //A continuacion se actualiza el campo listado, de aquel concesionario que coincida con el id
     //upsert:false es para que no cree un documento nuevo en caso de no encontrar ninguno que coincida
    await db.collection("Concesionarios").updateOne({"_id": new ObjectId(id)},{$set:{"listado":result.listado}},{upsert:false})
-    response.json({ message: "ok" });
+   //Devolvemos mensaje
+    response.json({ message: "Coche insertado cob exito" });
   }
   catch{
     response.json({message:"No se ha podido actualizar"});
@@ -129,28 +130,46 @@ app.post("/concesionarios/:id/coches", async (request, response) => {
 });
 
 
-/*
 
 
 //ACTUALIZACION DE DATOS
 
 // Actualizar un concesionario
 
-app.put("/concesionarios/:id", (request, response) => {
-  const id = request.params.id;
-  concesionarios[id] = request.body;
-  response.json({ message: "ok" });
+app.put("/concesionarios/:id", async (request, response) => {
+  try{
+    const id = request.params.id;
+    //Con replace One actualizamos todo el documento (el concesionario)
+    await db.collection("Concesionarios").replaceOne({"_id": new ObjectId(id)},request.body);
+    //Devolvemos mensaje de que el concesionario se ha actualizado
+    response.json({ message: "Concesionario actualizado" });
+  }catch{
+    response.json("No es posible actualizar el concesionario")
+  }
 });
 
 //Actualizar el coche de un concesionario
 
-app.put("/concesionarios/:id/coches/:id2", (request, response) => {
-  const id = request.params.id;
-  const idcoche = request.params.id2;
-  concesionarios[id]["listado"][idcoche] = request.body;
-  response.json({ message: "ok" });
+app.put("/concesionarios/:id/coches/:id2", async (request, response) => {
+  try{
+    const id = request.params.id;
+    const idcoche = request.params.id2
+    //Obtenemos el concesionario que queremos actualizar
+    let result = await db.collection("Concesionarios").findOne({"_id": new ObjectId(id)});
+    //A la lista del concesionario obtenido actualizamos el coche del indice de la lista que el usuario haya pasado por
+    //parametros
+    result.listado[idcoche] = request.body;
+    //Ahora, actualizamos la lista del documento, que contendra su contenido anterior 
+    //mas el coche actualizado
+    await db.collection("Concesionarios").updateOne({"_id": new ObjectId(id)},{$set:{"listado":result.listado}},{upsert:false});
+    //Devolvemos mensaje de que el coche se ha actualizado
+    response.json({ message: "Coche actualizado actualizado" });
+  }catch{
+    response.json("No es posible actualizar el coche")
+  }
 });
 
+/*
 //ELIMINACION DE DATOS
 
 // Borrar un concensionario

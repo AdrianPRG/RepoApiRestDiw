@@ -42,7 +42,7 @@ app.listen(port, async () => {
 // Obtener todos los concesionarios
 app.get("/concesionarios", async (request, response) => {
   let resultados = await db.collection("Concesionarios").find({}).toArray();
-  response.json(resultados);
+  response.json({resultados});
 });
 
 
@@ -74,34 +74,58 @@ app.get("/concesionarios/:id/coches", async (request, response) => {
 
 app.get("/concesionarios/:id/coches/:id2", async (request, response) => {
   try{
-      const id = request.params.id;
+    //Obtenemos los parametros
+    const id = request.params.id;
     const id2 = request.params.id2;
-    //Con projection decimos que no aparezca id pero si listado
+    //Con projection decimos que no aparezca id pero si listado, y decimos que encuentra el concesionario con el id deseado
     let result = await db.collection("Concesionarios").findOne({"_id": new ObjectId(id)},{projection : {"listado":1, "_id":0}});
+    //obtenemos el coche que queremos segun posicion
     result = result.listado[id2];
+    //Devolvemos resultado
     response.json({ result });
   }
   catch{
-    response.json("No hay datos que concuerden");
+    response.json( {message: "No hay datos que concuerden"});
   }
 });
 
 
-/*
+
 // INSERCCION DE DATOS
 
 // Añadir un nuevo concesionario
 app.post("/concesionarios", async (request, response) => {
-  await db.collection("Concesionarios").insertOne(request.body);
-  response.json({ message: "Concesionario añadido con exito" });
+  try{
+    //primero creamos el concesionario 
+    let concesionario = request.body;
+    //A continuacion, transformamos su campo id en tipo de dato de object it
+    concesionario._id = new ObjectId(concesionario._id);
+    //lo insertamos en la base de datos
+    await db.collection("Concesionarios").insertOne(concesionario);
+    response.json({ message: "Concesionario añadido con exito" });
+  }catch{
+    //En caso de error, se nos mostrara el siguiente mensaje
+    response.json("No se ha podido crear el concesionario");
+  }
 });
 
 //Añadir un coche a un concesionario
 
 app.post("/concesionarios/:id/coches", async (request, response) => {
-  let id = request.params.id;
-  let concesionario =  await db.collection("Concesionarios").findOneAndUpdate({"_id": new ObjectId(id)},{"listado":request.body});
-  response.json({ message: "ok" });
+  try{
+    let id = request.params.id;
+    //Se obtiene el concesionario al que se le desea añadir un coche
+    let result = await db.collection("Concesionarios").findOne({"_id": new ObjectId(id)});
+    //Se añade a su lista el body (cuerpo del json)
+    result.listado.push(request.body);
+    //A continuacion se actualiza el campo listado, de aquel concesionario que coincida con el id
+    //upsert:false es para que no cree un documento nuevo en caso de no encontrar ninguno que coincida
+   await db.collection("Concesionarios").updateOne({"_id": new ObjectId(id)},{$set:{"listado":result.listado}},{upsert:false})
+    response.json({ message: "ok" });
+  }
+  catch{
+    response.json({message:"No se ha podido actualizar"});
+  }
 });
 
 

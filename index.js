@@ -1,6 +1,5 @@
 // Indicamos el puerto en el que vamos a desplegar la aplicación
 const port = process.env.PORT || 8081;
-
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 //URL de conexion
 const uri =
@@ -8,11 +7,44 @@ const uri =
 // Create a MongoClient with a MongoClientOptions object to set the Stable API versio
 const express = require("express");
 
+//Indicamos que se va a utilizar helmet para la seguridad
+const helmet = require("helmet");
 // Inicializamos la aplicación
 const app = express();
 
 // Indicamos que la aplicación puede recibir JSON (API Rest)
 app.use(express.json());
+
+//USO DE HELMET
+
+//Limita la informacion que se envia al navegar entre paginas
+app.use(helmet.referrerPolicy({ policy: "no-referrer" }));
+
+//Sirve para evitar ataques de Cross site scripting
+
+app.use(helmet.xssFilter());
+
+//Esta configuracion permite que solo se cargen scripts del dominio y que ningun otro
+//atacante pueda cargar scripts con contenido malicioso
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'"],
+      imgSrc: ["'self'"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  })
+);
+
+//  Este filtro ayuda a que los navegadores no adivinen el tipo de contenido
+
+app.use(helmet.noSniff());
 
 //Creamos el cliente con las opcio es de mongoDb del objeto de la api.
 const cliente = new MongoClient(uri, {
@@ -103,13 +135,15 @@ app.get("/concesionarios/:id/coches/:id2", async (request, response) => {
 // Añadir un nuevo concesionario
 app.post("/concesionarios", async (request, response) => {
   try {
-    //primero creamos el concesionario
-    let concesionario = request.body;
-    //A continuacion, transformamos su campo id en tipo de dato de object it
-    concesionario._id = new ObjectId(concesionario._id);
-    //lo insertamos en la base de datos
-    await db.collection("Concesionarios").insertOne(concesionario);
-    response.json({ message: "Concesionario añadido con exito" });
+    if (request.body != null) {
+      //primero creamos el concesionario
+      let concesionario = request.body;
+      //A continuacion, transformamos su campo id en tipo de dato de object it
+      concesionario._id = new ObjectId(concesionario._id);
+      //lo insertamos en la base de datos
+      await db.collection("Concesionarios").insertOne(concesionario);
+      response.json({ message: "Concesionario añadido con exito" });
+    }
   } catch {
     //En caso de error, se nos mostrara el siguiente mensaje
     response.json("No se ha podido crear el concesionario");
@@ -137,7 +171,7 @@ app.post("/concesionarios/:id/coches", async (request, response) => {
         { upsert: false }
       );
     //Devolvemos mensaje
-    response.json({ message: "Coche insertado cob exito" });
+    response.json({ message: "Coche insertado con exito" });
   } catch {
     response.json({ message: "No se ha podido actualizar" });
   }
@@ -184,7 +218,7 @@ app.put("/concesionarios/:id/coches/:id2", async (request, response) => {
         { upsert: false }
       );
     //Devolvemos mensaje de que el coche se ha actualizado
-    response.json({ message: "Coche actualizado actualizado" });
+    response.json({ message: "Coche actualizado" });
   } catch {
     response.json("No es posible actualizar el coche");
   }

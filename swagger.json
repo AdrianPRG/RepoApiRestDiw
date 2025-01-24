@@ -1,0 +1,134 @@
+{
+  "swagger": "2.0",
+  "basePath": "/",
+  "info": {
+    "title": "Concesionarios API",
+    "version": "1.0.0"
+  },
+  "definitions": {
+    "Concesionario": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string"
+        },
+        "direccion": {
+          "type": "string"
+        },
+        "listado": {
+          "type": "array",
+          "items":{
+            "$ref":"#/definitions/Coche"
+          }
+        }
+      },
+      "required": ["nombre", "direccion"]
+    },
+    "Coche": {
+      "type": "object",
+      "properties": {
+        "modelo": {
+          "type": "string"
+        },
+        "precio": {
+          "type": "integer"
+        },
+        "cv": {
+          "type": "integer"
+        }
+      },
+      "required": ["modelo", "precio","cv"]
+    }
+  },
+  "paths": {
+    "/concesionarios": {
+      "get": {
+        "summary": "Fetch concesionarios",
+        "operationId": "getConcesionarios",
+        "responses": {
+          "200": {
+            "description": "List of concesionarios.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Concesionario"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/concesionarios/{id}":{
+      "get":{
+        "summary":"Fetch concesionarios by id",
+        "operationId":"getConcesionariosById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Concesionario by id",
+            "schema": {
+              "$ref": "#/definitions/Concesionario"
+            }
+          }
+        }
+      }
+    },
+    "/concesionarios/{id}/coches":{
+      "get":{
+        "summary":"Fetch coches of concesionario by id",
+        "operationId":"getCochesOfConcesionario",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "List of coches by id",
+            "schema": {
+              "$ref": "#/definitions/Concesionario"
+            }
+          }
+        }
+      }
+    },
+    "/concesionarios/{id}/coches/{id2}":{
+      "get":{
+        "summary":"Fetch coche of concesionario by id",
+        "operationId":"getCocheOfConcesionario",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "id2",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Coche by id",
+            "schema": {
+              "$ref": "#/definitions/Coche"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -108,6 +108,42 @@
             }
           }
         }
+      },
+      "put": {
+        "summary": "Update concesionario by id",
+        "operationId": "updateConcesionario",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "concesionario",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Concesionario",
+              "example": {
+                "nombre": "Ferrari",
+                "direccion": "Calle Retama nº 19",
+                "listado": [
+                  {
+                    "modelo": "F40",
+                    "precio": 1000000,
+                    "cv": 478
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Concesionario actualizado con exito"
+          }
+        }
       }
     },
     "/concesionarios/{id}/coches": {
@@ -137,15 +173,15 @@
         "consumes": ["application/json"],
         "parameters": [
           {
-            "in":"path",
-            "name":"id",
-            "required":true,
-            "type":"string"
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
           },
           {
             "in": "body",
             "name": "coche",
-            "required":true,
+            "required": true,
             "schema": {
               "$ref": "#/definitions/Coche",
               "example": {
@@ -187,6 +223,42 @@
             "schema": {
               "$ref": "#/definitions/Coche"
             }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update coche by id",
+        "operationId": "updateCoche",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "id2",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "coche",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Coche",
+              "example": {
+                "modelo": "F40",
+                "precio": 1000000,
+                "cv": 478
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Coche actualizado con exito"
           }
         }
       }

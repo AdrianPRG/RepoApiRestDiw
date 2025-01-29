@@ -144,6 +144,23 @@
             "description": "Concesionario actualizado con exito"
           }
         }
+      },
+      "delete": {
+        "summary": "Delete concesionario by id",
+        "operationId": "deleteConcesionario",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Concesionario eliminado con exito"
+          }
+        }
       }
     },
     "/concesionarios/{id}/coches": {
@@ -259,6 +276,29 @@
         "responses": {
           "200": {
             "description": "Coche actualizado con exito"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete coche by id",
+        "operationId": "deleteCoche",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "id2",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Coche eliminado con exito"
           }
         }
       }

@@ -1,6 +1,11 @@
 // Indicamos el puerto en el que vamos a desplegar la aplicación
 const port = process.env.PORT || 8081;
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+
+//Creamos las constantes de swagger;
+
+const swaggerUI = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 //URL de conexion
 const uri =
   "mongodb+srv://alopgal962:a3SUqGNvkvwFZuep@cluster0.bovi8.mongodb.net/Dawebconcesionario?retryWrites=true&w=majority&appName=Cluster0";
@@ -11,6 +16,8 @@ const express = require("express");
 const helmet = require("helmet");
 // Inicializamos la aplicación
 const app = express();
+
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // Indicamos que la aplicación puede recibir JSON (API Rest)
 app.use(express.json());
@@ -173,7 +180,7 @@ app.post("/concesionarios/:id/coches", async (request, response) => {
     //Devolvemos mensaje
     response.json({ message: "Coche insertado con exito" });
   } catch {
-    response.json({ message: "No se ha podido actualizar" });
+    response.json({ message: "No se ha podido insertar coche" });
   }
 });
 

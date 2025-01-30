@@ -1,0 +1,307 @@
+{
+  "swagger": "2.0",
+  "basePath": "/",
+  "info": {
+    "title": "Concesionarios API",
+    "version": "1.0.0"
+  },
+  "definitions": {
+    "Concesionario": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string"
+        },
+        "direccion": {
+          "type": "string"
+        },
+        "listado": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Coche"
+          }
+        }
+      },
+      "required": ["nombre", "direccion"]
+    },
+    "Coche": {
+      "type": "object",
+      "properties": {
+        "modelo": {
+          "type": "string"
+        },
+        "precio": {
+          "type": "integer"
+        },
+        "cv": {
+          "type": "integer"
+        }
+      },
+      "required": ["modelo", "precio", "cv"]
+    }
+  },
+  "paths": {
+    "/concesionarios": {
+      "get": {
+        "summary": "Fetch concesionarios",
+        "operationId": "getConcesionarios",
+        "responses": {
+          "200": {
+            "description": "List of concesionarios.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Concesionario"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Concesionario",
+        "operationId": "createConcesionaro",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "concesionario",
+            "schema": {
+              "$ref": "#/definitions/Concesionario",
+              "example": {
+                "nombre": "Ferrari",
+                "direccion": "Calle Retama nº 19",
+                "listado": [
+                  {
+                    "modelo": "F40",
+                    "precio": 1000000,
+                    "cv": 478
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{message: 'Concesionario añadido'}"
+          }
+        }
+      }
+    },
+    "/concesionarios/{id}": {
+      "get": {
+        "summary": "Fetch concesionarios by id",
+        "operationId": "getConcesionariosById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Concesionario by id",
+            "schema": {
+              "$ref": "#/definitions/Concesionario"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update concesionario by id",
+        "operationId": "updateConcesionario",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "concesionario",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Concesionario",
+              "example": {
+                "nombre": "Ferrari",
+                "direccion": "Calle Retama nº 19",
+                "listado": [
+                  {
+                    "modelo": "F40",
+                    "precio": 1000000,
+                    "cv": 478
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Concesionario actualizado con exito"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete concesionario by id",
+        "operationId": "deleteConcesionario",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Concesionario eliminado con exito"
+          }
+        }
+      }
+    },
+    "/concesionarios/{id}/coches": {
+      "get": {
+        "summary": "Fetch coches of concesionario by id",
+        "operationId": "getCochesOfConcesionario",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of coches by id",
+            "schema": {
+              "$ref": "#/definitions/Coche"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Coche",
+        "operationId": "createCoche",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "coche",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Coche",
+              "example": {
+                "modelo": "Porsche",
+                "precio": 45000,
+                "cv": 150
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{message: 'Coche añadido'}"
+          }
+        }
+      }
+    },
+    "/concesionarios/{id}/coches/{id2}": {
+      "get": {
+        "summary": "Fetch coche of concesionario by id",
+        "operationId": "getCocheOfConcesionario",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "id2",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Coche by id",
+            "schema": {
+              "$ref": "#/definitions/Coche"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update coche by id",
+        "operationId": "updateCoche",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "id2",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "coche",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Coche",
+              "example": {
+                "modelo": "F40",
+                "precio": 1000000,
+                "cv": 478
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Coche actualizado con exito"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete coche by id",
+        "operationId": "deleteCoche",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "id2",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Coche eliminado con exito"
+          }
+        }
+      }
+    }
+  }
+}
